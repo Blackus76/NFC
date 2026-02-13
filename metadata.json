@@ -1,0 +1,7 @@
+{
+  "name": "NFC PetCare - Dog ID & Records",
+  "description": "A sophisticated pet management application that uses NFC technology to store and retrieve dog profiles, including breed information, photos, gender, and vaccination records. Features AI-powered breed detection and vaccination advice.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
