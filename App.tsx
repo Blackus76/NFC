@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
-import { DogProfile, Gender, NFCState } from './types';
-import { HomeView } from './views/HomeView';
-import { ProfileView } from './views/ProfileView';
-import { EditProfileView } from './views/EditProfileView';
-import { Navbar } from './components/Navbar';
+import { DogProfile, Gender, NFCState } from './types.ts';
+import { HomeView } from './views/HomeView.tsx';
+import { ProfileView } from './views/ProfileView.tsx';
+import { EditProfileView } from './views/EditProfileView.tsx';
+import { Navbar } from './components/Navbar.tsx';
 
 const INITIAL_DOGS: DogProfile[] = [
   {
