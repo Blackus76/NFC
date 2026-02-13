@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { HashRouter, Routes, Route, Link } from 'react-router-dom';
-import { DogProfile, Gender, NFCState } from './types.ts';
-import { HomeView } from './views/HomeView.tsx';
-import { ProfileView } from './views/ProfileView.tsx';
-import { EditProfileView } from './views/EditProfileView.tsx';
-import { Navbar } from './components/Navbar.tsx';
+import { DogProfile, Gender, NFCState } from './types';
+import { HomeView } from './views/HomeView';
+import { ProfileView } from './views/ProfileView';
+import { EditProfileView } from './views/EditProfileView';
+import { Navbar } from './components/Navbar';
 
 const INITIAL_DOGS: DogProfile[] = [
   {
@@ -14,7 +14,7 @@ const INITIAL_DOGS: DogProfile[] = [
     name: 'Burek',
     breed: 'Golden Retriever',
     gender: Gender.MALE,
-    photoUrl: 'https://picsum.photos/seed/dog1/400/400',
+    photoUrl: 'https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=400',
     birthDate: '2021-05-15',
     vaccinations: [
       { id: 'v1', name: 'Wścieklizna', date: '2023-10-01', expiryDate: '2024-10-01' },
@@ -26,8 +26,12 @@ const INITIAL_DOGS: DogProfile[] = [
 
 const App: React.FC = () => {
   const [dogs, setDogs] = useState<DogProfile[]>(() => {
-    const saved = localStorage.getItem('dogs_v1');
-    return saved ? JSON.parse(saved) : INITIAL_DOGS;
+    try {
+      const saved = localStorage.getItem('dogs_v1');
+      return saved ? JSON.parse(saved) : INITIAL_DOGS;
+    } catch (e) {
+      return INITIAL_DOGS;
+    }
   });
 
   const [nfcState, setNfcState] = useState<NFCState>({
@@ -53,7 +57,7 @@ const App: React.FC = () => {
 
   const startNFCScan = async (onScan?: (serialNumber: string) => void) => {
     if (!('NDEFReader' in window)) {
-      alert("NFC nie jest wspierane w tej przeglądarce. Użyj Chrome na Androidzie i upewnij się, że masz włączone NFC w telefonie.");
+      alert("NFC nie jest wspierane w tej przeglądarce. Użyj Chrome na Androidzie.");
       return;
     }
 
@@ -69,8 +73,7 @@ const App: React.FC = () => {
       });
 
     } catch (error) {
-      setNfcState(prev => ({ ...prev, lastError: "Nie można uruchomić czytnika NFC.", isReading: false }));
-      alert("Błąd NFC: Upewnij się, że strona ma uprawnienia do NFC.");
+      setNfcState(prev => ({ ...prev, lastError: "Błąd NFC.", isReading: false }));
     }
   };
 
@@ -94,7 +97,7 @@ const App: React.FC = () => {
             </Link>
             <button 
               onClick={() => startNFCScan()}
-              className={`p-4 -mt-10 rounded-full shadow-xl transition-all ${nfcState.isReading ? 'bg-orange-500 nfc-pulse' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
+              className={`p-4 -mt-10 rounded-full shadow-xl transition-all ${nfcState.isReading ? 'bg-orange-500 animate-pulse' : 'bg-blue-600 hover:bg-blue-700'} text-white`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20v-8m0 0V4m0 8h8m-8 0H4"/></svg>
             </button>
