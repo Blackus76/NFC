@@ -12,7 +12,7 @@
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; margin: 0; }
         #root:empty::before {
-          content: 'Inicjalizacja PetNFC...';
+          content: 'Uruchamianie systemu PetNFC...';
           position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
           font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; font-size: 13px;
         }
@@ -20,6 +20,7 @@
 </head>
 <body>
     <div id="root"></div>
+
     <script type="importmap">
 {
   "imports": {
@@ -33,5 +34,13 @@
   }
 }
 </script>
+
+    <!-- Ten skrypt pozwala na działanie plików .tsx bezpośrednio w przeglądarce (np. na GitHub Pages) -->
+    <script type="module">
+      import { install } from "https://esm.sh/run@1.41.0";
+      install();
+    </script>
+
+    <script type="text/babel" src="index.tsx"></script>
 </body>
 </html>
