@@ -32,10 +32,26 @@
           color: #64748b;
           text-transform: uppercase;
           letter-spacing: 0.1em;
-          font-size: 12px;
+          font-size: 14px;
+        }
+        .error-overlay {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            z-index: 9999;
         }
     </style>
-<script type="importmap">
+</head>
+<body class="antialiased text-gray-900">
+    <div id="root"></div>
+
+    <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@19.0.0",
@@ -48,15 +64,27 @@
   }
 }
 </script>
-<!-- Ten skrypt pozwala przeglądarce czytać pliki .tsx bezpośrednio -->
-<script type="module">
-  import { install } from "https://esm.sh/run";
-  install();
-</script>
-</head>
-<body class="antialiased text-gray-900">
-    <div id="root"></div>
-    <!-- Wskazujemy przeglądarce plik startowy -->
+
+    <script type="module">
+      // System raportowania błędów na ekranie
+      window.onerror = function(msg, url, line, col, error) {
+        const root = document.getElementById('root');
+        if (root && root.innerHTML === "") {
+          root.innerHTML = `
+            <div class="error-overlay">
+              <div style="background:#fee2e2; color:#b91c1c; padding:20px; rounded-2xl; border:1px solid #fecaca; max-width:400px;">
+                <h2 style="font-weight:900; margin-bottom:10px; text-transform:uppercase;">Błąd ładowania</h2>
+                <p style="font-size:12px; font-family:monospace; margin-bottom:20px;">${msg}</p>
+                <button onclick="location.reload()" style="background:#b91c1c; color:white; padding:10px 20px; border-radius:10px; border:none; font-weight:bold; cursor:pointer;">Odśwież stronę</button>
+              </div>
+            </div>`;
+        }
+      };
+
+      import { install } from "https://esm.sh/run";
+      install();
+    </script>
+    
     <script type="module" src="./index.tsx"></script>
 </body>
 </html>
