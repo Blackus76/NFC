@@ -1,7 +1,7 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { HashRouter, Routes, Route, useNavigate, Link } from 'react-router-dom';
-import { DogProfile, Gender, NFCState, Vaccination } from './types';
+import React, { useState, useEffect } from 'react';
+import { HashRouter, Routes, Route, Link } from 'react-router-dom';
+import { DogProfile, Gender, NFCState } from './types';
 import { HomeView } from './views/HomeView';
 import { ProfileView } from './views/ProfileView';
 import { EditProfileView } from './views/EditProfileView';
@@ -53,14 +53,14 @@ const App: React.FC = () => {
   };
 
   const startNFCScan = async (onScan?: (serialNumber: string) => void) => {
-    if (!nfcState.isSupported) {
-      alert("NFC nie jest wspierane w tej przeglądarce. Użyj Chrome na Androidzie.");
+    if (!('NDEFReader' in window)) {
+      alert("NFC nie jest wspierane w tej przeglądarce. Użyj Chrome na Androidzie i upewnij się, że masz włączone NFC w telefonie.");
       return;
     }
 
     try {
       setNfcState(prev => ({ ...prev, isReading: true, lastError: null }));
-      // @ts-ignore - Web NFC is still experimental
+      // @ts-ignore
       const ndef = new window.NDEFReader();
       await ndef.scan();
       
@@ -69,17 +69,10 @@ const App: React.FC = () => {
         if (onScan) onScan(serialNumber);
       });
 
-      ndef.addEventListener("readingerror", () => {
-        setNfcState(prev => ({ ...prev, lastError: "Błąd odczytu tagu NFC.", isReading: false }));
-      });
-
     } catch (error) {
       setNfcState(prev => ({ ...prev, lastError: "Nie można uruchomić czytnika NFC.", isReading: false }));
+      alert("Błąd NFC: Upewnij się, że strona ma uprawnienia do NFC.");
     }
-  };
-
-  const stopNFCScan = () => {
-    setNfcState(prev => ({ ...prev, isReading: false }));
   };
 
   return (
@@ -95,7 +88,6 @@ const App: React.FC = () => {
           </Routes>
         </main>
         
-        {/* Floating Action Bar */}
         <div className="fixed bottom-0 left-0 right-0 p-4 flex justify-center pointer-events-none">
           <div className="bg-white/90 backdrop-blur-md shadow-lg rounded-full px-6 py-3 flex gap-8 items-center border border-gray-200 pointer-events-auto">
             <Link to="/" className="text-gray-500 hover:text-blue-600 transition-colors">
